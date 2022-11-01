@@ -26,11 +26,11 @@ public class UnitTest1
         Assert.Equal("Scott Hanselman", noSortResponse.Data[0]);
         Assert.Equal("Jon Skeet", noSortResponse.Data[1]);
 
-        //var sortResponse = await qlClient.Query(static query => query.Authors(new AuthorSortInput[] { new AuthorSortInput { Name = SortEnumType.Asc } } , o => o.Name));
-        //Assert.Null(sortResponse.Errors);
-        //Assert.Equal(2, sortResponse.Data.Length);
-        //Assert.Equal("Jon Skeet", sortResponse.Data[0]);
-        //Assert.Equal("Scott Hanselman", sortResponse.Data[1]);
+        var sortResponse = await qlClient.Query(static query => query.Authors(new AuthorSortInput[] { new AuthorSortInput { Name = SortEnumType.Asc } }, o => o.Name));
+        Assert.Null(sortResponse.Errors);
+        Assert.Equal(2, sortResponse.Data.Length);
+        Assert.Equal("Jon Skeet", sortResponse.Data[0]);
+        Assert.Equal("Scott Hanselman", sortResponse.Data[1]);
 
     }
 }
