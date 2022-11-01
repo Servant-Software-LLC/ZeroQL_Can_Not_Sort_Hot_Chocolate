@@ -3,3 +3,9 @@
 ################################################################################
 
 /.vs
+/ClientCodeGeneration/bin/Debug/net6.0
+/ClientCodeGeneration/obj
+/HotChocoServer/bin/Debug/net6.0
+/HotChocoServer/obj
+/Integration.Tests/bin/Debug/net6.0
+/Integration.Tests/obj

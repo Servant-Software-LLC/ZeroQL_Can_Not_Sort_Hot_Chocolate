@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ClientCodeGeneration": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\Dev\\Test Programs\\ZeroQL HotChoco Sorting\\Integration.Tests\\Generated\""
+    }
+  }
+}

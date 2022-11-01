@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="ZeroQL" Version="2.1.1" />
+	<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
+	<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" >
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="GraphQL-Parser" Version ="8.0.0"/>
+    <ProjectReference Include="..\HotChocoServer\HotChocoServer.csproj" />
+  </ItemGroup>
+
+</Project>
