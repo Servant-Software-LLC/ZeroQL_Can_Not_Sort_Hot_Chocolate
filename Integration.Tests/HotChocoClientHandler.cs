@@ -1,27 +1,36 @@
 ﻿using HotChocolate;
+using HotChocolate.AspNetCore.Serialization;
 using HotChocolate.Execution;
-using Newtonsoft.Json;
 using System.Net;
 using System.Text;
-using ZeroQL.Internal;
 
 namespace Integration.Tests;
 
 public class HotChocoClientHandler : HttpClientHandler
 {
     private readonly IRequestExecutor executor;
+    private readonly IHttpRequestParser httpRequestParser;
 
-    public HotChocoClientHandler(IRequestExecutor executor)
+    public HotChocoClientHandler(IRequestExecutor executor, IHttpRequestParser httpRequestParser)
     {
-        this.executor = executor;
+        this.executor = executor ?? throw new ArgumentNullException(nameof(executor));
+        this.httpRequestParser = httpRequestParser ?? throw new ArgumentNullException(nameof(httpRequestParser));
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequest, CancellationToken cancellationToken)
     {
-        var requestJson = await httpRequest.Content!.ReadAsStringAsync(cancellationToken);
-        var request = JsonConvert.DeserializeObject<GraphQLRequest>(requestJson);
-        var executionResult = await executor.ExecuteAsync(request.Query, cancellationToken);
-        var json = await executionResult.ToJsonAsync();
+        var requestStream = await httpRequest.Content!.ReadAsStreamAsync(cancellationToken);
+        var graphQLRequests = await httpRequestParser.ReadJsonRequestAsync(requestStream, cancellationToken);
+
+        string json = string.Empty;
+        foreach(HotChocolate.Language.GraphQLRequest graphQLRequest in graphQLRequests)
+        {
+            var query = graphQLRequest.Query!.ToString();
+            var executionResult = graphQLRequest.Variables is null ? 
+                await executor.ExecuteAsync(query, cancellationToken) : 
+                await executor.ExecuteAsync(query, graphQLRequest.Variables, cancellationToken);
+            json += await executionResult.ToJsonAsync();
+        }
 
         return new HttpResponseMessage(HttpStatusCode.OK)
         {

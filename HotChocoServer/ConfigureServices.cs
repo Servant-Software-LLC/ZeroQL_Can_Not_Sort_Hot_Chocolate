@@ -26,10 +26,33 @@ public static class ConfigureServices
                 .GetRequiredService<IRequestExecutorResolver>();
     }
 
+    public static (IRequestExecutorResolver, TExtraService) GetGraphQLRequestExecutorResolver<TExtraService>()
+    {
+        var serviceCollection = CreateServiceCollection();
+
+        AddServices(serviceCollection);
+
+        var serviceProvider = serviceCollection
+                .BuildServiceProvider();
+        var requestExecutorResolver = serviceProvider.GetRequiredService<IRequestExecutorResolver>();
+        var extraService = serviceProvider.GetRequiredService<TExtraService>();
+
+        return (requestExecutorResolver, extraService);
+    }
+
+
     public static async Task<IRequestExecutor> GetGraphQLExecutorAsync()
     {
         return await GetGraphQLRequestExecutorResolver()
         .GetRequestExecutorAsync();
+    }
+
+    public static async Task<(IRequestExecutor, TExtraService)> GetGraphQLExecutorAsync<TExtraService>()
+    {
+        var (requestExecutorResolver, extraService) = GetGraphQLRequestExecutorResolver<TExtraService>();
+        var requestExecutor = await requestExecutorResolver.GetRequestExecutorAsync();
+
+        return (requestExecutor, extraService);
     }
 
     /// <summary>
